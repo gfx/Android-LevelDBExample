@@ -29,34 +29,39 @@ public class MainActivity extends Activity {
 
         textView.setText("");
 
-        performLevelDB();
-        performLevelDB();
+        performLevelDB(1);
+        performLevelDB(1);
+        performLevelDB(10);
+        performLevelDB(100);
 
-        performShaedPreferences();
-        performShaedPreferences();
+
+        performShaedPreferences(1);
+        performShaedPreferences(1);
+        performShaedPreferences(10);
+        performShaedPreferences(100);
     }
 
-    private void performShaedPreferences() {
+    private void performShaedPreferences(int n) {
         long t0 = System.currentTimeMillis();
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < n; i++) {
             long value = sharedPrefs.getLong("foo", 0L);
             SharedPreferences.Editor editor = sharedPrefs.edit();
             editor.putLong("foo", value + 1L);
             editor.commit();
         }
 
-        textView.append("SharedPreferences open, (get, put)*100: " + (System.currentTimeMillis() - t0) + "ms\n");
+        textView.append("SharedPreferences open, (get, put)*"+n+": " + (System.currentTimeMillis() - t0) + "ms\n");
     }
 
-    private void performLevelDB() {
+    private void performLevelDB(int n) {
         long t0 = System.currentTimeMillis();
 
         LevelDB db = DBFactory.open(this);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < n; i++) {
             if (db.exists("foo")) {
                 long value = db.getLong("foo");
                 db.put("foo", value + 1L);
@@ -67,6 +72,6 @@ public class MainActivity extends Activity {
 
         db.close();
 
-        textView.append("LebelDB open, (get, put)*100, and close: " + (System.currentTimeMillis() - t0) + "ms\n");
+        textView.append("LebelDB open, (get, put)*" + n + ", and close: " + (System.currentTimeMillis() - t0) + "ms\n");
     }
 }
